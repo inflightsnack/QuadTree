@@ -7,6 +7,7 @@
 
 import Testing
 import CoreGraphics
+
 @testable import QuadTree
 
 
@@ -61,7 +62,7 @@ import CoreGraphics
 
 @Test func emptySearchStaticQuadTree() async throws {
     // Test searching an empty region.
-    var quadTree = StaticQuadTree<Int>(area: CGRect(x: 0, y: 0, width: 100, height: 100))
+    let quadTree = StaticQuadTree<Int>(area: CGRect(x: 0, y: 0, width: 100, height: 100))
     let results = quadTree.search(in: CGRect(x: 10, y: 10, width: 5, height: 5))
     #expect(results.isEmpty)
 }

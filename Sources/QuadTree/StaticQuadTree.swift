@@ -53,7 +53,7 @@ public struct StaticQuadTree<T> {
         for (i, childRect) in childAreas.enumerated() {
             if childRect.contains(elementArea) {
                 if (children[i] == nil && depth < QuadTree.maxDepth) {
-                    var newChild = StaticQuadTree(area: childRect, depth: depth + 1)
+                    let newChild = StaticQuadTree(area: childRect, depth: depth + 1)
                     children[i] = newChild
                 }
                 if children[i] != nil {
