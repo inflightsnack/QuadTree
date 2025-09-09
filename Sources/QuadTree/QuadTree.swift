@@ -4,5 +4,5 @@
 import Foundation
 
 struct QuadTree {
-    static let maxDepth: Int = 5
+    static let maxDepth: Int = 10
 }

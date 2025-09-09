@@ -16,7 +16,7 @@ public struct StaticQuadTree<T> {
     public let area: CGRect
     let childAreas: [CGRect]
     var children: [StaticQuadTree<T>?] = [nil, nil, nil, nil]
-    
+    // the items at this node that are too big to fit in a child node
     var items: [(value: T, area: CGRect)] = []
     
     public init(area: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100), depth: Int = 0) {
