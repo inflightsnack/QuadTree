@@ -12,42 +12,46 @@ import CoreGraphics
 public struct StaticQuadTreeContainer<T>: RandomAccessCollection {
     public typealias Index = Array<T>.Index
     public typealias Element = T
-    public var startIndex: Index { allItems.startIndex }
-    public var endIndex: Index { allItems.endIndex }
+    public var startIndex: Index { items.startIndex }
+    public var endIndex: Index { items.endIndex }
     public subscript(position: Index) -> Element {
-        return allItems[position]
+        return items[position]
     }
     
-    var allItems: [Element] = []
-    var root: StaticQuadTree< Array<Element>.Index >
+    var items: [Element] = []
+    var tree: StaticQuadTree< Array<Element>.Index >
     public var area : CGRect {
-        return root.area
+        return tree.area
     }
 
     public init(area: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)) {
-        root = StaticQuadTree(area: area, depth: 0)
+        tree = StaticQuadTree(area: area, depth: 0)
     }
     
     public mutating func removeAll() {
-        allItems.removeAll()
-        root.removeAll()
+        items.removeAll()
+        tree.removeAll()
     }
     
     public var count: Int {
-        return allItems.count
+        return items.count
     }
     
     public var isEmpty: Bool {
-        return allItems.isEmpty
+        return items.isEmpty
     }
     
     public mutating func insert(_ newElement: Element, at elementArea: CGRect) {
-        allItems.append(newElement)
-        root.insert(allItems.endIndex.advanced(by: -1), at: elementArea)
+        items.append(newElement)
+        tree.insert(items.endIndex.advanced(by: -1), at: elementArea)
     }
     
     public func search(in searchArea: CGRect) -> [Index] {
-        return root.search(in: searchArea)
+        return tree.query(in: searchArea)
+    }
+    
+    public func allAreas() -> [CGRect] {
+        return tree.allAreas()
     }
 }
 

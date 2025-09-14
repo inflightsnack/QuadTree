@@ -9,6 +9,7 @@ import Foundation
 import CoreGraphics
 
 public struct StaticQuadTree<T> {
+    public typealias Element = (area: CGRect, value: T)
     
     let depth: Int
     
@@ -17,7 +18,7 @@ public struct StaticQuadTree<T> {
     let childAreas: [CGRect]
     var children: [StaticQuadTree<T>?] = [nil, nil, nil, nil]
     // the items at this node that are too big to fit in a child node
-    var items: [(value: T, area: CGRect)] = []
+    var items: [Element] = []
     
     public init(area: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100), depth: Int = 0) {
         self.depth = depth
@@ -63,35 +64,41 @@ public struct StaticQuadTree<T> {
             }
         }
         // didn't insert into child so...
-        items.append((value: newElement, area: elementArea))
+        items.append((area: elementArea, value: newElement))
     }
     
-    public func search(in searchArea: CGRect) -> [T] {
+    public func query(in searchArea: CGRect) -> [T] {
         var results: [T] = []
         for item in items {
             if searchArea.intersects(item.area) {
                 results.append(item.value)
             }
         }
-        for child in children {
-            if let child = child, searchArea.contains(child.area) {
+        for child in children.compactMap({$0}) {
+            if searchArea.contains(child.area) {
                 // whole child area is contained so add all its items
                 results.append(contentsOf: child.allItems().map { $0.value })
             }
-            else if let child = child, searchArea.intersects(child.area) {
-                results.append(contentsOf: child.search(in: searchArea))
+            else if searchArea.intersects(child.area) {
+                results.append(contentsOf: child.query(in: searchArea))
             }
         }
         return results
     }
     
-    public func allItems() -> [(value: T, area: CGRect)] {
+    public func allItems() -> [Element] {
         var allItems = items
-        for child in children {
-            if let child = child {
-                allItems.append(contentsOf: child.allItems())
-            }
+        for child in children.compactMap({$0}) {
+            allItems.append(contentsOf: child.allItems())
         }
         return allItems
+    }
+    
+    public func allAreas() -> [CGRect] {
+        var areas = [area]
+        for child in children.compactMap({$0}) {
+            areas.append(contentsOf: child.allAreas())
+        }
+        return areas
     }
 }
