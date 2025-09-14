@@ -60,3 +60,29 @@ import CoreGraphics
     let all = Array(container)
     #expect(all == ["A", "B"])
 }
+
+@Test func testIteratorConformance() {
+    var container = StaticQuadTreeContainer<String>(
+        area: CGRect(x: 0, y: 0, width: 100, height: 100)
+    )
+    container.insert("A", at: CGRect(x: 10, y: 10, width: 10, height: 10))
+    container.insert("B", at: CGRect(x: 50, y: 50, width: 10, height: 10))
+    var collected: [String] = []
+    for value in container {
+        collected.append(value)
+    }
+    #expect(collected == ["A", "B"])
+}
+
+@Test func testIteratorIndexConformance() {
+    var container = StaticQuadTreeContainer<String>(
+        area: CGRect(x: 0, y: 0, width: 100, height: 100)
+    )
+    container.insert("A", at: CGRect(x: 10, y: 10, width: 10, height: 10))
+    container.insert("B", at: CGRect(x: 50, y: 50, width: 10, height: 10))
+    var collected: [Int: String] = [:]
+    for (i, value) in container.enumerated() {
+        collected.updateValue(value, forKey: i)
+    }
+    #expect(collected == [0: "A", 1: "B"])
+}
